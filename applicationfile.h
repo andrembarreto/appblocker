@@ -3,12 +3,13 @@
 
 #include <QObject>
 #include <QFile>
+#include <QTimer>
 
 class ApplicationFile : public QObject
 {
     Q_OBJECT
 public:
-    explicit ApplicationFile(QObject *parent = nullptr);
+    explicit ApplicationFile(std::filesystem::path filePath, QObject *parent = nullptr);
     bool isBlocked();
 
 public slots:
@@ -25,10 +26,11 @@ private:
 
     QString _name;
     QFileDevice::Permissions _permissions;
-    std::filesystem::path _path;
+    const std::filesystem::path _path;
     QString _unblockPass;
     bool _blocked;
     int _blockTime; // ms
+    QTimer _timer;
 };
 
 #endif // APPLICATIONFILE_H

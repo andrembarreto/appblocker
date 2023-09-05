@@ -1,5 +1,6 @@
 #include <QTest>
 #include <QTimer>
+#include <QDir>
 
 #include <chrono>
 #include <thread>
@@ -18,13 +19,13 @@ private slots:
 };
 
 void TestApplicationFile::canBlock() {
-    ApplicationFile appFile;
+    ApplicationFile appFile(std::filesystem::path(QString(QDir::currentPath() + "/testFile").toStdString()));
     appFile.block();
     QVERIFY(appFile.isBlocked());
 }
 
 void TestApplicationFile::canUnblockWithCorrectPass() {
-    ApplicationFile appFile;
+    ApplicationFile appFile(std::filesystem::path(QString(QDir::currentPath() + "/testFile").toStdString()));
     QString pass = "pass123";
     appFile.setUnblockPass(pass);
     appFile.block();
@@ -33,7 +34,7 @@ void TestApplicationFile::canUnblockWithCorrectPass() {
 }
 
 void TestApplicationFile::shouldThrowWrongPassException() {
-    ApplicationFile appFile;
+    ApplicationFile appFile(std::filesystem::path(QString(QDir::currentPath() + "/testFile").toStdString()));
     QString pass = "pass123";
     appFile.setUnblockPass(pass);
     appFile.block();
@@ -41,9 +42,11 @@ void TestApplicationFile::shouldThrowWrongPassException() {
 }
 
 void TestApplicationFile::unblocksAfterSetPeriod() {
-    ApplicationFile appFile;
+    ApplicationFile appFile(std::filesystem::path(QString(QDir::currentPath() + "/testFile").toStdString()));
     appFile.setBlockTime(1);
     appFile.block();
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     QVERIFY(!appFile.isBlocked());
 }
+
+// TODO: ADD FIXTURES TO AVOID CODE DUPLICATION
