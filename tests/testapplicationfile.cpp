@@ -49,4 +49,8 @@ void TestApplicationFile::unblocksAfterSetPeriod() {
     QVERIFY(!appFile.isBlocked());
 }
 
+QTEST_APPLESS_MAIN(TestApplicationFile)
+
+#include "tst_testapplicationfile.moc"
+
 // TODO: ADD FIXTURES TO AVOID CODE DUPLICATION
