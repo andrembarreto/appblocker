@@ -2,9 +2,6 @@
 #include <QTimer>
 #include <QDir>
 
-#include <chrono>
-#include <thread>
-
 #include "applicationfile.h"
 #include "wrongpassexception.h"
 
@@ -12,11 +9,27 @@ class TestApplicationFile: public QObject
 {
     Q_OBJECT
 private slots:
+    void init();
+    void cleanup();
+
     void canBlock();
     void canUnblockWithCorrectPass();
     void shouldThrowWrongPassException();
     void unblocksAfterSetPeriod();
 };
+
+void TestApplicationFile::init() {
+    QFile testFile("testFile");
+    if (!testFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QFAIL("Failed to create the file");
+    }
+    testFile.close();
+    testFile.setPermissions(QFileDevice::ExeUser);
+}
+
+void TestApplicationFile::cleanup() {
+    QFile::remove("testFile");
+}
 
 void TestApplicationFile::canBlock() {
     ApplicationFile appFile(std::filesystem::path(QString(QDir::currentPath() + "/testFile").toStdString()));
@@ -45,12 +58,12 @@ void TestApplicationFile::unblocksAfterSetPeriod() {
     ApplicationFile appFile(std::filesystem::path(QString(QDir::currentPath() + "/testFile").toStdString()));
     appFile.setBlockTime(1);
     appFile.block();
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    QTest::qSleep(1);
     QVERIFY(!appFile.isBlocked());
 }
 
 QTEST_APPLESS_MAIN(TestApplicationFile)
 
-#include "tst_testapplicationfile.moc"
+#include "testapplicationfile.moc"
 
 // TODO: ADD FIXTURES TO AVOID CODE DUPLICATION
