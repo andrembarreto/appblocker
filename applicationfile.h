@@ -3,7 +3,9 @@
 
 #include <QObject>
 #include <QFile>
-#include <QTimer>
+#include <QThread>
+
+#include "unblockworker.h"
 
 class ApplicationFile : public QObject
 {
@@ -17,20 +19,22 @@ public slots:
     void unblock(QString pass);
     void setUnblockPass(QString pass);
     void setBlockTime(int time);
+    static void unblock(std::filesystem::path path, QFileDevice::Permissions permissions, bool &blockStatus);
+    void setBlockStatusFalse();
 
 signals:
-    void unblocked();
+    void unblockRequest();
+    void changeBlockTimeRequest(int blockTime);
 
 private:
-    void unblock();
-
     QString _name;
     QFileDevice::Permissions _permissions;
     const std::filesystem::path _path;
     QString _unblockPass;
     bool _blocked;
     int _blockTime; // ms
-    QTimer _timer;
+    QThread *_unblockThread;
+    UnblockWorker *_worker;
 };
 
 #endif // APPLICATIONFILE_H

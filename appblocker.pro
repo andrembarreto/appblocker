@@ -3,7 +3,8 @@ QT += quick virtualkeyboard testlib
 SOURCES += \
         applicationfile.cpp \
         main.cpp \
-        tests/testapplicationfile.cpp
+        tests/testapplicationfile.cpp \
+        unblockworker.cpp
 
 resources.files = main.qml 
 resources.prefix = /$${TARGET}
@@ -28,4 +29,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     applicationfile.h \
+    unblockworker.h \
     wrongpassexception.h

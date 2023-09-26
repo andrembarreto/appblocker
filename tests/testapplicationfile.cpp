@@ -1,6 +1,4 @@
 #include <QTest>
-#include <QTimer>
-#include <QDir>
 
 #include "applicationfile.h"
 #include "wrongpassexception.h"
@@ -56,14 +54,11 @@ void TestApplicationFile::shouldThrowWrongPassException() {
 }
 
 void TestApplicationFile::unblocksAfterSetPeriod() {
-    appFile->setBlockTime(1);
+    appFile->setBlockTime(5);
     appFile->block();
-    QTest::qSleep(1);
-    QVERIFY(!appFile->isBlocked());
+    QTRY_COMPARE_EQ_WITH_TIMEOUT(appFile->isBlocked(), false, 5);
 }
 
-QTEST_APPLESS_MAIN(TestApplicationFile)
+QTEST_MAIN(TestApplicationFile)
 
 #include "testapplicationfile.moc"
-
-// TODO: ADD FIXTURES TO AVOID CODE DUPLICATION
